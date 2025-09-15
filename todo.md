@@ -2,4 +2,6 @@
 
 ## [x] **Done_navbar_home**
 
-### [] Make a index.ts file to store mock data for now.
+### [x] Make a index.ts file to store mock data for now.
+
+
