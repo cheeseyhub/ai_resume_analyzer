@@ -4,4 +4,4 @@
 
 ### [x] Make a index.ts file to store mock data for now.
 
-
+### [ ] Make a circle component file ;
