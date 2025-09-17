@@ -6,7 +6,7 @@ const ScoreCircle = ({ score = 75 }: { score: number }) => {
   const normalizedRadius = radius - stroke / 2;
   const circumference = normalizedRadius * Math.PI * 2;
   const percentage = score / 100;
-  const strokeDashoffset = circumference - (1 -percentage);
+  const strokeDashoffset = circumference * (1 - percentage);
   return (
     <div className="relative w-[100px] h-[100px]">
       <svg
