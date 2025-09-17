@@ -1,9 +1,8 @@
-import type { Route } from "./+types/home";
 import { resumes } from "../../constants/index";
 import ResumeCard from "~/components/ResumeCard";
 import NavBar from "~/components/NavBar";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Ai Resume Analyzer" },
     { name: "description", content: "Analyze resumes with ai." },
