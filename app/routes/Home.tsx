@@ -1,6 +1,9 @@
 import { resumes } from "../../constants/index";
 import ResumeCard from "~/components/ResumeCard";
 import NavBar from "~/components/NavBar";
+import { usePuterStore } from "~/lib/puter";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta() {
   return [
@@ -10,6 +13,14 @@ export function meta() {
 }
 
 export default function Home() {
+  const { auth } = usePuterStore();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if(!auth.isAuthenticated){
+      navigate("/auth?next=/");
+    }
+  })
   return (
     <>
       <NavBar />
