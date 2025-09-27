@@ -1,6 +1,6 @@
 import NavBar from "~/components/NavBar";
 import { useState, type FormEvent } from "react";
-import { stat } from "node:fs/promises";
+import FileUploader from "~/components/FileUploader";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
@@ -30,7 +30,7 @@ const Upload = () => {
 
           <form>
             <div className="form-div">
-              <label htmlFor="companyName">Upload Resume:</label>
+              <label htmlFor="companyName">Company Name:</label>
               <input type="text" id="companyName" name="companyName" />
             </div>
             <div className="form-div">
@@ -49,7 +49,7 @@ const Upload = () => {
 
             <div className="form-div">
               <label htmlFor="file_uploader">Upload Resume:</label>
-              
+              <FileUploader />
             </div>
 
             <button type="submit" className="primary-button">
