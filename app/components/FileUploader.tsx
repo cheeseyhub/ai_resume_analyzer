@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { useState } from "react";
+import { formatSize } from "~/lib/utils";
 
 interface FileUploaderProps {
   onFileSelect: (file: File | null) => void;
@@ -28,11 +29,17 @@ export default function FileUploader({ onFileSelect }: FileUploaderProps) {
   return (
     <div {...getRootProps()} className="w-full flex justify-center">
       <input {...getInputProps()} />
-      <div className="space-y-4 cursor-pointer">
+      <div className="space-y-4 cursor-pointer w-full">
         {file ? (
-          <div className="flex w-full flex-row text-gray-500 items-center ">
+          <div
+            className="uploader-selected-file"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img src="/images/pdf.png" alt="pdf" className="size-10" />
-            <p className="text-lg text-gray-500">{file.name}</p>
+            <p className="text-lg text-gray-500">
+              {file.name}{" "}
+              <span className="text-amber-900">({formatSize(file.size)})</span>
+            </p>
           </div>
         ) : (
           <div>
