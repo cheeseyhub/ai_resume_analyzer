@@ -11,6 +11,16 @@ const Upload = () => {
   const handleFileSelect = (file: File | null) => {
     setFile(file);
   };
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget.closest("form");
+    console.log(form);
+    if (!form) return;
+    const formData = new FormData(form);
+    const companyName = formData.get("companyName");
+    const jobTitle = formData.get("jobTitle");
+    const jobDescription = formData.get("jobDescription");
+  };
 
   return (
     <>
@@ -32,7 +42,7 @@ const Upload = () => {
             )}
           </div>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-div">
               <label htmlFor="companyName">Company Name:</label>
               <input type="text" id="companyName" name="companyName" />

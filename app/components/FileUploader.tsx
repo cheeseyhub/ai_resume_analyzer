@@ -40,6 +40,15 @@ export default function FileUploader({ onFileSelect }: FileUploaderProps) {
               {file.name}{" "}
               <span className="text-amber-900">({formatSize(file.size)})</span>
             </p>
+            <img
+              src="icons/cross.svg"
+              alt="cross"
+              className="size-7"
+              onClick={() => {
+                onFileSelect(null);
+                setFile(null);
+              }}
+            />
           </div>
         ) : (
           <div>
