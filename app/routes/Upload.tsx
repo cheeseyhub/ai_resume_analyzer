@@ -11,15 +11,29 @@ const Upload = () => {
   const handleFileSelect = (file: File | null) => {
     setFile(file);
   };
+
+  const handleAnalyze = ({
+    companyName,
+    jobTitle,
+    jobDescription,
+    file,
+  }: {
+    companyName: string;
+    jobTitle: string;
+    jobDescription: string;
+    file: File | null;
+  }) => {
+    setIsProccessing(true);
+    setStatusText("Uploading...");
+  };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (!form) return;
     const formData = new FormData(form);
-    const companyName = formData.get("companyName");
-    const jobTitle = formData.get("jobTitle");
-    const jobDescription = formData.get("jobDescription");
-    
+    const companyName = formData.get("companyName") as string;
+    const jobTitle = formData.get("jobTitle") as string;
+    const jobDescription = formData.get("jobDescription") as string;
   };
 
   return (
