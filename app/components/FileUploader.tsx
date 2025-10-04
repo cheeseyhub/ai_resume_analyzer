@@ -15,7 +15,7 @@ export default function FileUploader({ onFileSelect }: FileUploaderProps) {
       onFileSelect?.(doc);
       setFile(doc);
     },
-    [onFileSelect],
+    [onFileSelect]
   );
 
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =

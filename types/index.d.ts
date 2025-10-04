@@ -4,6 +4,17 @@ export interface Job {
   location: string;
   requiredSkills: string[];
 }
+export interface FileMetaData {
+  file: File;
+  path: string;
+  relativePath: string;
+  lastModified: number;
+  lastModifiedDate: Date;
+  name: string;
+  size: number;
+  type: string;
+  webkitRelativePath: string;
+}
 
 export interface Resume {
   id: string;

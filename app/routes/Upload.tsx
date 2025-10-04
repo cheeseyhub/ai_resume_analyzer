@@ -1,6 +1,7 @@
 import NavBar from "~/components/NavBar";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
+import { convertPdfToImage } from "~/lib/pdf2img";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
@@ -21,10 +22,13 @@ const Upload = () => {
     companyName: string;
     jobTitle: string;
     jobDescription: string;
-    file: File | null;
+    file: File;
   }) => {
     setIsProccessing(true);
     setStatusText("Uploading...");
+    // convertPdfToImage(file).then((result) => {
+    //   console.log(result);
+    // });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,6 +38,12 @@ const Upload = () => {
     const companyName = formData.get("companyName") as string;
     const jobTitle = formData.get("jobTitle") as string;
     const jobDescription = formData.get("jobDescription") as string;
+
+    if (!file) {
+      setStatusText("Please upload a resume file.");
+      return;
+    }
+    handleAnalyze({ companyName, jobTitle, jobDescription, file });
   };
 
   return (
