@@ -27,9 +27,6 @@ const Upload = () => {
   }) => {
     setIsProccessing(true);
     setStatusText("Uploading...");
-    convertPdfToImage(file).then((result) => {
-      console.log(result);
-    });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,6 +39,7 @@ const Upload = () => {
 
     if (!file) {
       setStatusText("Please upload a resume file.");
+      console.log("No File.");
       return;
     }
     handleAnalyze({ companyName, jobTitle, jobDescription, file });
