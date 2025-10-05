@@ -1,20 +1,21 @@
 import NavBar from "~/components/NavBar";
 import { useState, useEffect, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
+import { usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
-import type { FileMetaData } from "types";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
   const [statusText, setStatusText] = useState("");
-
   const [file, setFile] = useState<File | null>(null);
+
+  const { auth, isLoading, fs, ai, kv } = usePuterStore();
 
   const handleFileSelect = (file: File | null) => {
     setFile(file);
   };
 
-  const handleAnalyze = ({
+  const handleAnalyze = async ({
     companyName,
     jobTitle,
     jobDescription,
@@ -23,10 +24,25 @@ const Upload = () => {
     companyName: string;
     jobTitle: string;
     jobDescription: string;
-    file: File | FileMetaData;
+    file: File;
   }) => {
     setIsProccessing(true);
     setStatusText("Uploading...");
+    const uploadedFile = await fs.upload([file]);
+    if (!uploadedFile) {
+      return setStatusText("Faild to upload file.");
+    }
+    setStatusText("Analyzing...");
+    const imageFile = await convertPdfToImage(file);
+    if (!imageFile.file) return setStatusText("Error: Failed to convert file.");
+
+    setStatusText("Uploading the image....");
+    //Upload the image to the puter storage
+    const uploadedImage = await fs.upload([imageFile.file]);
+    if (!uploadedImage) {
+      return setStatusText("Failed to upload image.");
+    }
+    setStatusText("Preparing Data......");
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +55,6 @@ const Upload = () => {
 
     if (!file) {
       setStatusText("Please upload a resume file.");
-      console.log("No File.");
       return;
     }
     handleAnalyze({ companyName, jobTitle, jobDescription, file });

@@ -13,7 +13,6 @@
     "@react-router/serve": "^7.7.1",
     "clsx": "^2.1.1",
     "isbot": "^5.1.27",
-    "pdf-to-png-converter": "^3.10.0",
     "pdf2pic": "^3.2.0",
     "pdfjs-dist": "^5.4.149",
     "react": "^19.1.0",
