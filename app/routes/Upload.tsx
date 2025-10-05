@@ -2,6 +2,7 @@ import NavBar from "~/components/NavBar";
 import { useState, useEffect, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
 import { convertPdfToImage } from "~/lib/pdf2img";
+import type { FileMetaData } from "types";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
@@ -22,13 +23,13 @@ const Upload = () => {
     companyName: string;
     jobTitle: string;
     jobDescription: string;
-    file: File;
+    file: File | FileMetaData;
   }) => {
     setIsProccessing(true);
     setStatusText("Uploading...");
-    // convertPdfToImage(file).then((result) => {
-    //   console.log(result);
-    // });
+    convertPdfToImage(file).then((result) => {
+      console.log(result);
+    });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
