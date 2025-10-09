@@ -3,7 +3,6 @@ import { useState, useEffect, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
-import { generatePath } from "react-router";
 import { prepareInstructions, AIResponseFormat } from "constants/index";
 
 const Upload = () => {
@@ -54,90 +53,97 @@ const Upload = () => {
       jobTitle,
       jobDescription,
       feedback: "",
-    }
+    };
     resumePath: uploadedFile.path;
     //Store the resume in the puter storage
     await kv.set(`resume:${uuid}`, JSON.stringify(data));
     setStatusText("Analyzing......");
     //Pass the image file path and the message to analyze the image e.g you are an expert ATS and resume analysis thing.
-    const feedback = await ai.feedback(data.imagePath, prepareInstructions({
-      jobTitle: data.jobTitle,
-      jobDescription: data.jobDescription,
-      AIResponseFormat: AIResponseFormat
-    }))
+    const feedback = await ai.feedback(
+      data.imagePath,
+      prepareInstructions({
+        jobTitle: data.jobTitle,
+        jobDescription: data.jobDescription,
+        AIResponseFormat: AIResponseFormat,
+      }),
+    );
     //If failed to get feedback
-    if (!feedback) { return setStatusText("Error: Faild to get feedback.") };
-    
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    if (!form) return;
-    const formData = new FormData(form);
-    const companyName = formData.get("companyName") as string;
-    const jobTitle = formData.get("jobTitle") as string;
-    const jobDescription = formData.get("jobDescription") as string;
-
-    if (!file) {
-      setStatusText("Please upload a resume file.");
-      return;
+    if (!feedback) {
+      return setStatusText("Error: Faild to get feedback.");
     }
-    handleAnalyze({ companyName, jobTitle, jobDescription, file });
-  };
 
-  return (
-    <>
-      <NavBar />
-      <main className="bg-[url('images/bg-main.svg')] bg-cover">
-        <section className="main-section ">
-          <div className="page-heading">
-            <h1>
-              Smart feedback <br />
-              For your dream job.
-            </h1>
-            {isProccessing ? (
-              <>
-                <h2>{statusText}</h2>
-                <img src="images/resume-scan.gif" alt="Loading..." />
-              </>
-            ) : (
-              <h2>Drop your resume here for an ATS score improvement tips.</h2>
-            )}
-          </div>
+  }
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      if (!form) return;
+      const formData = new FormData(form);
+      const companyName = formData.get("companyName") as string;
+      const jobTitle = formData.get("jobTitle") as string;
+      const jobDescription = formData.get("jobDescription") as string;
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-div">
-              <label htmlFor="companyName">Company Name:</label>
-              <input type="text" id="companyName" name="companyName" />
-            </div>
-            <div className="form-div">
-              <label htmlFor="jobTitle">Job Title:</label>
-              <input type="text" id="jobTitle" name="jobTitle" />
-            </div>
-            <div className="form-div">
-              <label htmlFor="jobDescription">Job Description:</label>
-              <textarea
-                id="jobDescription"
-                name="jobDescription"
-                placeholder="Write a clear & concise job description with responsibilites and expectations."
-                rows={4}
-              />
+      if (!file) {
+        setStatusText("Please upload a resume file.");
+        return;
+      }
+      handleAnalyze({ companyName, jobTitle, jobDescription, file });
+    };
+
+    return (
+      <>
+        <NavBar />
+        <main className="bg-[url('images/bg-main.svg')] bg-cover">
+          <section className="main-section ">
+            <div className="page-heading">
+              <h1>
+                Smart feedback <br />
+                For your dream job.
+              </h1>
+              {isProccessing ? (
+                <>
+                  <h2>{statusText}</h2>
+                  <img src="images/resume-scan.gif" alt="Loading..." />
+                </>
+              ) : (
+                <h2>
+                  Drop your resume here for an ATS score improvement tips.
+                </h2>
+              )}
             </div>
 
-            <div className="form-div">
-              <label htmlFor="file_uploader">Upload Resume:</label>
-              <FileUploader onFileSelect={handleFileSelect} />
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="form-div">
+                <label htmlFor="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" />
+              </div>
+              <div className="form-div">
+                <label htmlFor="jobTitle">Job Title:</label>
+                <input type="text" id="jobTitle" name="jobTitle" />
+              </div>
+              <div className="form-div">
+                <label htmlFor="jobDescription">Job Description:</label>
+                <textarea
+                  id="jobDescription"
+                  name="jobDescription"
+                  placeholder="Write a clear & concise job description with responsibilites and expectations."
+                  rows={4}
+                />
+              </div>
 
-            <button type="submit" className="primary-button">
-              Submit
-            </button>
-          </form>
-        </section>
-      </main>
-    </>
-  );
-}
-}
+              <div className="form-div">
+                <label htmlFor="file_uploader">Upload Resume:</label>
+                <FileUploader onFileSelect={handleFileSelect} />
+              </div>
+
+              <button type="submit" className="primary-button">
+                Submit
+              </button>
+            </form>
+          </section>
+        </main>
+      </>
+    );
+  ;
+};
 
 export default Upload;
