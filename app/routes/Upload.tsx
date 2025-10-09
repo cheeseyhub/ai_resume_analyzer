@@ -3,6 +3,8 @@ import { useState, useEffect, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
+import { generatePath } from "react-router";
+import { prepareInstructions, AIResponseFormat } from "constants/index";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
@@ -30,7 +32,7 @@ const Upload = () => {
     setStatusText("Uploading...");
     const uploadedFile = await fs.upload([file]);
     if (!uploadedFile) {
-      return setStatusText("Faild to upload file.");
+      return setStatusText("Failed to upload file.");
     }
     setStatusText("Analyzing...");
     const imageFile = await convertPdfToImage(file);
@@ -43,7 +45,30 @@ const Upload = () => {
       return setStatusText("Failed to upload image.");
     }
     setStatusText("Preparing Data......");
-  };
+    const uuid = crypto.randomUUID();
+    const data = {
+      id: uuid,
+      resumePath: uploadedFile.path,
+      imagePath: uploadedImage.path,
+      companyName,
+      jobTitle,
+      jobDescription,
+      feedback: "",
+    }
+    resumePath: uploadedFile.path;
+    //Store the resume in the puter storage
+    await kv.set(`resume:${uuid}`, JSON.stringify(data));
+    setStatusText("Analyzing......");
+    //Pass the image file path and the message to analyze the image e.g you are an expert ATS and resume analysis thing.
+    const feedback = await ai.feedback(data.imagePath, prepareInstructions({
+      jobTitle: data.jobTitle,
+      jobDescription: data.jobDescription,
+      AIResponseFormat: AIResponseFormat
+    }))
+    //If failed to get feedback
+    if (!feedback) { return setStatusText("Error: Faild to get feedback.") };
+    
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -112,6 +137,7 @@ const Upload = () => {
       </main>
     </>
   );
-};
+}
+}
 
 export default Upload;
