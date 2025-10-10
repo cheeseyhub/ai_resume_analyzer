@@ -9,6 +9,7 @@ const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
   const [statusText, setStatusText] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [image, setImage] = useState<string>("images/resume-scan.gif");
 
   const { auth, isLoading, fs, ai, kv } = usePuterStore();
 
@@ -29,21 +30,27 @@ const Upload = () => {
   }) => {
     setIsProccessing(true);
     setStatusText("Uploading...");
+
     const uploadedFile = await fs.upload([file]);
     if (!uploadedFile) {
       return setStatusText("Failed to upload file.");
     }
+
     setStatusText("Analyzing...");
     const imageFile = await convertPdfToImage(file);
     if (!imageFile.file) return setStatusText("Error: Failed to convert file.");
+    setImage(imageFile.imageUrl);
 
     setStatusText("Uploading the image....");
     //Upload the image to the puter storage
+
     const uploadedImage = await fs.upload([imageFile.file]);
     if (!uploadedImage) {
       return setStatusText("Failed to upload image.");
     }
+
     setStatusText("Preparing Data......");
+
     const uuid = crypto.randomUUID();
     const data = {
       id: uuid,
@@ -54,9 +61,10 @@ const Upload = () => {
       jobDescription,
       feedback: "",
     };
-    resumePath: uploadedFile.path;
+    console.log("Setting in kv storage.");
     //Store the resume in the puter storage
     await kv.set(`resume:${uuid}`, JSON.stringify(data));
+
     setStatusText("Analyzing......");
     //Pass the image file path and the message to analyze the image e.g you are an expert ATS and resume analysis thing.
     const feedback = await ai.feedback(
@@ -74,8 +82,11 @@ const Upload = () => {
     const feedBackText: string =
       typeof feedback.message.content === "string"
         ? feedback.message.content
-        : feedback.message.content[0];
-    //console.log(feedBackText)
+        : feedback.message.content[0].text;
+
+    data.feedback = JSON.parse(feedBackText);
+    await kv.set(`resume:${uuid}`, JSON.stringify(data));
+    setStatusText("Finished analyzing and redirecting now ......");
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,7 +117,7 @@ const Upload = () => {
             {isProccessing ? (
               <>
                 <h2>{statusText}</h2>
-                <img src="images/resume-scan.gif" alt="Loading..." />
+                <img src={image} alt="Loading..." />
               </>
             ) : (
               <h2>Drop your resume here for an ATS score improvement tips.</h2>
