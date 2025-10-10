@@ -70,12 +70,12 @@ const Upload = () => {
     if (!feedback) {
       return setStatusText("Error: Faild to get feedback.");
     }
-    console.log(feedback);
     //Get content  from the feedback
     const feedBackText: string =
       typeof feedback.message.content === "string"
         ? feedback.message.content
         : feedback.message.content[0];
+    //console.log(feedBackText)
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
