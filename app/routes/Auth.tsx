@@ -12,9 +12,7 @@ function Auth() {
     if (auth.isAuthenticated) {
       navigate(next);
     }
-
-    console.log(next);
-  }, [auth.isAuthenticated, next]);
+  },[auth.isAuthenticated, next]);
 
   return (
     <main className="bg-[url('images/bg-auth.svg')] bg-cover bg-no-repeat flex items-center justify-center">
