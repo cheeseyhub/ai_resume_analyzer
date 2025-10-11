@@ -5,6 +5,7 @@ import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
 import { prepareInstructions } from "constants/index";
+import { useLocation } from "react-router";
 
 const Upload = () => {
   const [isProccessing, setIsProccessing] = useState(false);
@@ -15,10 +16,10 @@ const Upload = () => {
 
   const { auth, isLoading, fs, ai, kv } = usePuterStore();
   useEffect(() => {
-    if (!auth.isAuthenticated) {
-      navigate("/auth?next=/");
+    if (!isLoading && !auth.isAuthenticated) {
+      navigate("/auth");
     }
-  });
+  }, [auth.isAuthenticated]);
 
   const handleFileSelect = (file: File | null) => {
     setFile(file);
@@ -94,6 +95,7 @@ const Upload = () => {
     data.feedback = JSON.parse(feedBackText);
     await kv.set(`resume:${uuid}`, JSON.stringify(data));
     setStatusText("Finished analyzing and redirecting now ......");
+    navigate(`/resume/${uuid}`);
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
