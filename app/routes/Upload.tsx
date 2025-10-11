@@ -1,5 +1,6 @@
 import NavBar from "~/components/NavBar";
 import { useState, useEffect, type FormEvent } from "react";
+import { useNavigate } from "react-router";
 import FileUploader from "~/components/FileUploader";
 import { usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
@@ -10,8 +11,14 @@ const Upload = () => {
   const [statusText, setStatusText] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<string>("images/resume-scan.gif");
+  const navigate = useNavigate();
 
   const { auth, isLoading, fs, ai, kv } = usePuterStore();
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      navigate("/auth?next=/");
+    }
+  });
 
   const handleFileSelect = (file: File | null) => {
     setFile(file);
