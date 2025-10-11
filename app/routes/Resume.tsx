@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { usePuterStore } from "~/lib/puter";
+import { Link } from "react-router";
 
 export const meta = () => [
   { title: "Resumeid | Review" },
@@ -11,7 +12,7 @@ export default function Resume() {
   const { id } = useParams();
   const { kv, auth, isLoading, fs } = usePuterStore();
   const navigate = useNavigate();
-  const [imageURL, setImageURL] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [resumeUrl, setResumeUrl] = useState<string>("");
   const [feedback, setFeedback] = useState<string>("");
 
@@ -29,7 +30,6 @@ export default function Resume() {
 
       const data = JSON.parse(resume);
 
-      console.log(data);
       const resumeBlob = await fs.read(data.resumePath);
       if (!resumeBlob) return;
 
@@ -41,16 +41,37 @@ export default function Resume() {
       if (!imageBlob) return;
 
       const image = URL.createObjectURL(imageBlob);
-      setImageURL(image);
+      setImageUrl(image);
       setFeedback(data.feedback);
     };
     loadResume();
   }, [id]);
 
   return (
-    <div>
-      <h1>Resume</h1>
-      <p>This is a sample resume.</p>
-    </div>
+    <main className="pt-0">
+      <nav className="resume-nav">
+        <Link to="/" className="back-button">
+          <img src="/icons/back.svg" alt="Back" className="w-2.5 h-2.5" />
+          <span className="text-gray-800 text-sm font-semibold">
+            Back to the HomePage
+          </span>
+        </Link>
+      </nav>
+      <div className="flex flex-row w-full max-lg:flex-col-reverse ">
+        <section className="feedback-section bg-[url('/images/bg-small.svg')] bg-cover h-[100vh] sticky top-0">
+          {imageUrl && resumeUrl && (
+            <div className="animate-in fade-in duration-1000 gradient-border max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
+              <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={imageUrl}
+                  className="w-full h-full object-contain rounded-2xl"
+                  title="resume"
+                />
+              </a>
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
   );
 }
