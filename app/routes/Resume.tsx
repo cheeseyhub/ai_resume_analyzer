@@ -2,6 +2,10 @@ import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { usePuterStore } from "~/lib/puter";
 import { Link } from "react-router";
+import Summary from "~/components/Summary";
+import ATS from "~/components/ATS";
+import Details from "~/components/Details";
+import type { Feedback } from "types";
 
 export const meta = () => [
   { title: "Resumeid | Review" },
@@ -14,7 +18,7 @@ export default function Resume() {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState<string>("");
   const [resumeUrl, setResumeUrl] = useState<string>("");
-  const [feedback, setFeedback] = useState<string>("");
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   useEffect(() => {
     if (!isLoading && !auth.isAuthenticated) {
@@ -75,7 +79,13 @@ export default function Resume() {
           <h2 className="text-4xl text-black font-bold">Resume Review</h2>
           {feedback ? (
             <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
-              Summary ATS Details
+              <Summary feedback={feedback} />
+              <ATS
+                score={feedback.ATS.score || 0}
+                suggestions={feedback.ATS.tips || []}
+              />
+
+              <Details feedback={feedback} />
             </div>
           ) : (
             <img src="images/resume-scan-2.gif" className="w-full" />
