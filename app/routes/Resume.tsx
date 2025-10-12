@@ -18,7 +18,7 @@ export default function Resume() {
 
   useEffect(() => {
     if (!isLoading && !auth.isAuthenticated) {
-      navigate("/auth");
+      navigate(` /auth?next=/resume/${id} `);
     }
   }, [auth.isAuthenticated]);
 
@@ -69,6 +69,16 @@ export default function Resume() {
                 />
               </a>
             </div>
+          )}
+        </section>
+        <section className="feedback-section">
+          <h2 className="text-4xl text-black font-bold">Resume Review</h2>
+          {feedback ? (
+            <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
+              Summary ATS Details
+            </div>
+          ) : (
+            <img src="images/resume-scan-2.gif" className="w-full" />
           )}
         </section>
       </div>
