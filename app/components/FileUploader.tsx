@@ -1,6 +1,5 @@
-import React, { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useState } from "react";
 import { formatSize } from "~/lib/utils";
 
 interface FileUploaderProps {

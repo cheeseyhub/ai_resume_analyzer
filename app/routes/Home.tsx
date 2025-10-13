@@ -1,9 +1,9 @@
-import { resumes } from "../../constants/index";
 import ResumeCard from "~/components/ResumeCard";
 import NavBar from "~/components/NavBar";
 import { usePuterStore } from "~/lib/puter";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import type { Resume } from "types";
 
 export function meta() {
   return [
@@ -13,14 +13,27 @@ export function meta() {
 }
 
 export default function Home() {
-  const { auth } = usePuterStore();
+  const { auth, kv } = usePuterStore();
   const navigate = useNavigate();
-  
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [loadingResumes, setLoadingResumes] = useState(true);
+
   useEffect(() => {
-    if(!auth.isAuthenticated){
+    if (!auth.isAuthenticated) {
       navigate("/auth?next=/");
     }
-  })
+  });
+  useEffect(() => {
+    const loadResumes = async () => {
+      const resumes = (await kv.list("resume:*", true)) as KVItem[];
+      const parsedResumes: Resume[] = resumes?.map((resume) => {
+        return JSON.parse(resume.value) as Resume;
+      });
+      setResumes(parsedResumes || []);
+      setLoadingResumes(false);
+    };
+    loadResumes();
+  }, []);
   return (
     <>
       <NavBar />
@@ -28,10 +41,23 @@ export default function Home() {
         <section className="main-section">
           <div className="page-heading">
             <h1>Track your Resume Ratings</h1>
-            <h2>Get your resume and applications rated.</h2>
+            {!loadingResumes && resumes.length > 0 ? (
+              <h2>Get your resume and applications rated.</h2>
+            ) : (
+              <h2>Your have no resumes yet .Start by uploading your resume.</h2>
+            )}
           </div>
         </section>
-        {resumes.length > 0 && (
+        {loadingResumes && (
+          <div className="flex flex-col items-center justify-center">
+            <img
+              src="/images/resume-scan-2.gif"
+              className="w-[300px]"
+              alt="Loading..."
+            />
+          </div>
+        )}
+        {!loadingResumes && resumes.length > 0 && (
           <section className="resumes-section">
             {resumes.map((resume) => (
               <ResumeCard key={resume.id} resume={resume} />

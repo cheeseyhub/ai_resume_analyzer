@@ -47,6 +47,8 @@ export default function Resume() {
       const image = URL.createObjectURL(imageBlob);
       setImageUrl(image);
       setFeedback(data.feedback);
+      
+      
     };
     loadResume();
   }, [id]);

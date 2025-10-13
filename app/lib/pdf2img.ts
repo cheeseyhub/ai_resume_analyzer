@@ -33,7 +33,13 @@ export async function convertPdfToImage(
     const lib = await loadPdfJs();
 
     const arrayBuffer = await file.arrayBuffer();
-    const pdf = await lib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await lib.getDocument({
+      data: arrayBuffer,
+      cMapUrl: "https://unpkg.com/pdfjs-dist@5.4.296/cmaps/",
+      cMapPacked: true,
+      standardFontDataUrl:
+        "https://unpkg.com/pdfjs-dist@5.4.296/standard_fonts/",
+    }).promise;
     const page = await pdf.getPage(1);
 
     const viewport = page.getViewport({ scale: 4 });
@@ -51,30 +57,26 @@ export async function convertPdfToImage(
     await page.render({ canvasContext: context!, viewport }).promise;
 
     return new Promise((resolve) => {
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            // Create a File from the blob with the same name as the pdf
-            const originalName = file.name.replace(/\.pdf$/i, "");
-            const imageFile = new File([blob], `${originalName}.png`, {
-              type: "image/png",
-            });
+      canvas.toBlob((blob) => {
+        if (blob) {
+          // Create a File from the blob with the same name as the pdf
+          const originalName = file.name.replace(/\.pdf$/i, "");
+          const imageFile = new File([blob], `${originalName}.png`, {
+            type: "image/png",
+          });
 
-            resolve({
-              imageUrl: URL.createObjectURL(blob),
-              file: imageFile,
-            });
-          } else {
-            resolve({
-              imageUrl: "",
-              file: null,
-              error: "Failed to create image blob",
-            });
-          }
-        },
-        "image/png",
-        1.0,
-      ); // Set quality to maximum (1.0)
+          resolve({
+            imageUrl: URL.createObjectURL(blob),
+            file: imageFile,
+          });
+        } else {
+          resolve({
+            imageUrl: "",
+            file: null,
+            error: "Failed to create image blob",
+          });
+        }
+      }, "image/png");
     });
   } catch (err) {
     return {
