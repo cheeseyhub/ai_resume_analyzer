@@ -58,10 +58,20 @@ export default function Home() {
           </div>
         )}
         {!loadingResumes && resumes.length > 0 && (
-          <section className="resumes-section">
-            {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
-            ))}
+          <section>
+            <section className="resumes-section">
+              {resumes.map((resume) => (
+                <ResumeCard key={resume.id} resume={resume} />
+              ))}
+            </section>
+            <footer className="flex justify-center">
+              <button
+                className="primary-button w-fit"
+                onClick={() => navigate("/wipe")}
+              >
+                Wipe
+              </button>
+            </footer>
           </section>
         )}
       </main>
