@@ -26,7 +26,7 @@ const ResumeCard = ({
   return (
     <Link
       to={`/resume/${id}`}
-      className="resume-card fade-in  animate-in duration-1000 "
+      className="resume-card fade-in  animate-in duration-1000"
     >
       <div className="resume-card-header">
         <div className="flex flex-col  gap-2">

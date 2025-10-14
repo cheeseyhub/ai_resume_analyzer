@@ -13,7 +13,7 @@ export function meta() {
 }
 
 export default function Home() {
-  const { auth, kv } = usePuterStore();
+  const { auth, kv, fs } = usePuterStore();
   const navigate = useNavigate();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loadingResumes, setLoadingResumes] = useState(true);
@@ -34,6 +34,26 @@ export default function Home() {
     };
     loadResumes();
   }, []);
+
+  const [files, setFiles] = useState<FSItem[]>([]);
+
+  const loadFiles = async () => {
+    const files = (await fs.readDir("./")) as FSItem[];
+    setFiles(files);
+  };
+
+  useEffect(() => {
+    loadFiles();
+  }, []);
+
+  const handleDelete = async () => {
+    files.forEach(async (file) => {
+      await fs.delete(file.path);
+    });
+    await kv.flush();
+    loadFiles();
+    setResumes([]);
+  };
   return (
     <>
       <NavBar />
@@ -64,14 +84,16 @@ export default function Home() {
                 <ResumeCard key={resume.id} resume={resume} />
               ))}
             </section>
-            <footer className="flex justify-center">
-              <button
-                className="primary-button w-fit"
-                onClick={() => navigate("/wipe")}
-              >
-                Wipe
-              </button>
-            </footer>
+            {auth.isAuthenticated && (
+              <footer className="flex justify-center">
+                <button
+                  className="w-fit  p-8 cursor-pointer font-semibold "
+                  onClick={() => handleDelete()}
+                >
+                  Wipe
+                </button>
+              </footer>
+            )}
           </section>
         )}
       </main>
