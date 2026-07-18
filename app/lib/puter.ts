@@ -334,8 +334,8 @@ export const usePuterStore = create<PuterStore>((set, get) => {
       return;
     }
 
-    return puter.ai.chat(
-      [
+    try {
+      const response = await puter.ai.chat([
         {
           role: "user",
           content: [
@@ -349,9 +349,14 @@ export const usePuterStore = create<PuterStore>((set, get) => {
             },
           ],
         },
-      ],
-      { model: "claude-3-7-sonnet-latest" },
-    ) as Promise<AIResponse | undefined>;
+      ]);
+      return response as AIResponse | undefined;
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "AI feedback request failed";
+      setError(msg);
+      return undefined;
+    }
   };
 
   const img2txt = async (image: string | File | Blob, testMode?: boolean) => {
