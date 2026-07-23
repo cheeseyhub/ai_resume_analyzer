@@ -1,8 +1,27 @@
 # AI Resume Analyzer
 
+[![Vercel](https://img.shields.io/badge/deployed%20on-Vercel-000000?style=flat&logo=vercel&logoColor=white)](https://ai-resume-analyzer-p0rmk6woi-cheeseyhubs-projects.vercel.app/)
+[![Repo Language](https://img.shields.io/github/languages/top/cheeseyhub/ai_resume_analyzer)](https://github.com/cheeseyhub/ai_resume_analyzer)
+
 AI Resume Analyzer helps job seekers quickly find how well their resume matches a job posting and gives concrete suggestions to improve their Applicant Tracking System (ATS) score. It is designed for job applicants, career coaches, and students preparing assignments who want fast, actionable feedback on resume fit for a specific company and role.
 
 Live demo: https://ai-resume-analyzer-p0rmk6woi-cheeseyhubs-projects.vercel.app/
+
+---
+
+Table of Contents
+- [a) App name, what it does, and the real problem it solves (and for whom)](#a-app-name-what-it-does-and-the-real-problem-it-solves-and-for-whom)
+- [b) LIVE deployed URL](#b-live-deployed-url)
+- [c) Features](#c-features)
+- [d) The AI feature — what it does and the system prompt / instructions](#d-the-ai-feature--what-it-does-and-the-system-prompt--instructions)
+- [e) Tools, services, and AI models used (or recommended)](#e-tools-services-and-ai-models-used-or-recommended)
+- [f) Screenshots (3+)](#f-screenshots-3)
+- [g) How to run the project (local)](#g-how-to-run-the-project-local)
+- [Supported file types](#supported-file-types)
+- [Quick example request / response](#quick-example-request--response)
+- [Known limitations](#known-limitations)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -148,6 +167,7 @@ Below are screenshots from the app UI. Keep these if they reflect your app or re
 3. Environment variables
    - Create a `.env` file (or set env vars in your host) with the required keys. Example names — update if your code expects different names:
      - OPENAI_API_KEY=sk-...
+     - NEXTAUTH_URL=http://localhost:5173
      - GOOGLE_CLIENT_ID=your-google-client-id
      - GOOGLE_CLIENT_SECRET=your-google-client-secret
      - NODE_ENV=development
@@ -165,6 +185,59 @@ Below are screenshots from the app UI. Keep these if they reflect your app or re
 6. Docker (optional)
    - docker build -t ai-resume-analyzer .
    - docker run -e OPENAI_API_KEY=sk-... -p 3000:3000 ai-resume-analyzer
+
+---
+
+## Supported file types
+- PDF (recommended)
+- DOCX (if supported by your parsing setup)
+- Plain text (.txt)
+
+If a file type is not parsed correctly, convert it to PDF first.
+
+---
+
+## Quick example request / response
+Example LLM request payload (JSON):
+{
+  "resume_text": "<full extracted resume text>",
+  "job_title": "Frontend Engineer",
+  "company": "Example Corp",
+  "job_description": "..."
+}
+
+Example LLM response (expected JSON):
+{
+  "score": 78,
+  "explanation": "Strong frontend experience, missing cloud keywords",
+  "strengths": ["React", "TypeScript", "component design"],
+  "gaps": ["AWS", "Docker", "CI/CD"],
+  "suggestions": ["Rewrote bullet: ..."],
+  "revised_summary": "Experienced frontend engineer..."
+}
+
+---
+
+## Known limitations
+- ATS scoring is heuristic: different companies use different ATS rules — treat the score as guidance, not a guarantee.
+- LLM responses may vary with model or prompt wording — use a fixed prompt and low temperature for consistent outputs.
+- Parsing complex PDFs (with images, multi-column layouts) may lose structure; prefer text-based PDFs.
+
+---
+
+## Contributing
+Contributions are welcome. If you'd like to improve the project:
+1. Fork the repo
+2. Create a feature branch (git checkout -b feature/my-change)
+3. Commit changes and push (git push origin feature/my-change)
+4. Open a pull request describing the change
+
+Please include tests (where appropriate) and update the README for any new functionality.
+
+---
+
+## License
+MIT License — see LICENSE file if present. If you want a different license, add it to the repo.
 
 ---
 
