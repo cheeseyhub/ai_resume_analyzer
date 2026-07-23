@@ -5,6 +5,14 @@
 
 AI Resume Analyzer helps job seekers quickly find how well their resume matches a job posting and gives concrete suggestions to improve their Applicant Tracking System (ATS) score. It is designed for job applicants, career coaches, and students preparing assignments who want fast, actionable feedback on resume fit for a specific company and role.
 
+## ⚙️Instructions on how it works
+  1. ✍️ sign up with google
+  2. ⬆️ Click on the upload button
+  3. 📝 Enter the job title that you are applying for, and enter the company name that has posted the job.
+  4. ⬆️ upload you resume
+  5. ⏱️ Wait for the document to be analyzed.
+  6. 👍 Get your ATS score and improvement suggestions
+
 Live demo: https://ai-resume-analyzer-p0rmk6woi-cheeseyhubs-projects.vercel.app/
 
 ---
